@@ -73,14 +73,14 @@ const Container = styled.div`
       .emoji-picker-react {
         position: absolute;
         top: -350px;
-        background-color: #080420;
-        box-shadow: 0 5px 10px #9a86f3;
-        border-color: #9a86f3;
+        background-color: #D4EAE2;
+        box-shadow: 0 5px 10px #95F7B2;
+        border-color: #95F7B2;
         .emoji-scroll-wrapper::-webkit-scrollbar {
           background-color: #080420;
           width: 5px;
           &-thumb {
-            background-color: #9a86f3;
+            background-color: #95F7B2;
           }
         }
         .emoji-categories {
@@ -90,10 +90,10 @@ const Container = styled.div`
         }
         .emoji-search {
           background-color: transparent;
-          border-color: #9a86f3;
+          border-color: #5CBE7D;
         }
         .emoji-group:before {
-          background-color: #080420;
+          background-color: #D4EAE2;
         }
       }
     }
@@ -127,7 +127,7 @@ const Container = styled.div`
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: #9a86f3;
+      background-color: #95F7B2;
       border: none;
       @media screen and (min-width: 720px) and (max-width: 1080px) {
         padding: 0.3rem 1rem;

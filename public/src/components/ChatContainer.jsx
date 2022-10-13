@@ -5,6 +5,11 @@ import Logout from "./Logout";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import { sendMessageRoute, recieveMessageRoute } from "../utils/APIRoutes";
+import {AES_128_Decryption,AES_128_Encryption,KeyExpansion,hexconvert} from './AES.js'
+
+
+
+const genRanHex = size => [...Array(size)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
 
 export default function ChatContainer({ currentChat, socket }) {
   const [messages, setMessages] = useState([]);
@@ -37,10 +42,22 @@ export default function ChatContainer({ currentChat, socket }) {
     const data = await JSON.parse(
       localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
     );
-    socket.current.emit("send-msg", {
+
+    console.log("Mesaj:" + msg);
+    let key = KeyExpansion(genRanHex(32));
+    let encrypted = ''
+    let hex = hexconvert(msg)
+    console.log("Hex:" + hex);
+    let loop = parseInt(hex.length / 32);
+    for (let x = 0; x < loop; x++) {
+        encrypted += AES_128_Encryption(hex.substring(32 * x,32*(x+1)),key) /// encryption
+    }
+    console.log(encrypted);
+    socket.current.emit("send-msg", {// servera giden socket fonksiyonu ? 
       to: currentChat._id,
       from: data._id,
-      msg,
+      encrypted,
+      key,
     });
     await axios.post(sendMessageRoute, {
       from: data._id,
@@ -55,9 +72,27 @@ export default function ChatContainer({ currentChat, socket }) {
 
   useEffect(() => {
     if (socket.current) {
-      socket.current.on("msg-recieve", (msg) => {
-        setArrivalMessage({ fromSelf: false, message: msg });
+      socket.current.on("msg-recieve", (encrypted,key) => { /// serverdan gelen mesaj yeri
+        let decrypted = ''
+        for (let i = 0; encrypted.length / 32 !== i; i++) {
+            decrypted += AES_128_Decryption(encrypted.substring(32*i,32*(i+1)),key)
+        }
+        console.log("hex sıfırsız: " + decrypted);
+        let original = '' 
+        for (let i = 0; parseInt(decrypted.length / 4) > i; i++) {
+            if(decrypted.substring((4 * i),4 * (i+1)) === '0000') {
+                break;
+            }
+            console.log(decrypted.substring((4 * i),4 * (i+1)))
+            original += String.fromCharCode(
+                parseInt(decrypted.substring((4 * i),4 * (i+1)),16)
+            )
+        }
+
+        console.log("Server'dan gelen mesaj (şifresiz):" + original);
+        setArrivalMessage({ fromSelf: false, message: original });
       });
+      
     }
   }, []);
 
@@ -68,6 +103,8 @@ export default function ChatContainer({ currentChat, socket }) {
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  
 
   return (
     <Container>
@@ -159,7 +196,7 @@ const Container = styled.div`
         padding: 1rem;
         font-size: 1.1rem;
         border-radius: 1rem;
-        color: #d1d1d1;
+        color: #000000;
         @media screen and (min-width: 720px) and (max-width: 1080px) {
           max-width: 70%;
         }
@@ -168,13 +205,13 @@ const Container = styled.div`
     .sended {
       justify-content: flex-end;
       .content {
-        background-color: #4f04ff21;
+        background-color: #95F7B2;
       }
     }
     .recieved {
       justify-content: flex-start;
       .content {
-        background-color: #9900ff20;
+        background-color: #D4EAE2;
       }
     }
   }
