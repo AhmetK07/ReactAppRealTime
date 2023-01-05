@@ -8,7 +8,7 @@ This is a real-time chat application built with React and Socket.io.
 - npm or yarn
 
 
-###Getting Started
+### Getting Started
 Clone the repository:
 git clone https://github.com/AhmetK07/ReactAppRealTime.git
 
@@ -21,7 +21,7 @@ npm start
 The application will be served at http://localhost:3000.
 
 
-###Here is a high-level overview of how the code is organized:
+### Here is a high-level overview of how the code is organized:
 
 The client directory contains the React frontend code.
 The server directory contains the Node.js backend code.
@@ -32,7 +32,7 @@ The frontend is built with React and communicates with the backend through Socke
 
 Overall, this codebase demonstrates how to build a simple real-time chat application with React and Socket.io.
 
-###Features
+### Features
 Real-time chat with multiple users
 User list showing who is online
 Custom user names
