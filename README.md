@@ -38,7 +38,7 @@ User list showing who is online
 Custom user names
 End-to-end encryption for secure communication
 
-###Technologies
+### Technologies
 React
 Socket.io
 Node.js
